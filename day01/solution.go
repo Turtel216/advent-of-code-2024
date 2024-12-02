@@ -1,7 +1,6 @@
-package main
+package day01
 
 import (
-	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -9,8 +8,8 @@ import (
 	"github.com/Turtel216/advent-of-code-2024/utils"
 )
 
-func main() {
-	lines := utils.ReadFromFile("./day01/input.txt")
+func Solve(path string) (int, int) {
+	lines := utils.ReadFromFile(path)
 
 	var list1, list2 []int
 
@@ -32,7 +31,6 @@ func main() {
 	for i := 0; i < len(list1); i++ {
 		result1 += utils.AbsInt(list1[i] - list2[i])
 	}
-	fmt.Printf("result 1: %d\n", result1)
 
 	// Part 2: Calculate the weighted sum based on occurrences in list2
 	occurrences := countOccurrences(list2)
@@ -42,7 +40,8 @@ func main() {
 			result2 += num * count
 		}
 	}
-	fmt.Printf("result 2: %d\n", result2)
+
+	return result1, result2
 }
 
 // countOccurrences returns a map of numbers to their occurrence counts
