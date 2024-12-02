@@ -23,18 +23,16 @@ advent-of-code-2024/
 │
 ├── day01/                 # Day 1: Challenge and solutions
 │   ├── input.txt          # Puzzle input for Day 1
-│   ├── solution.go        # Solution code written in Go
-│   └── README.md          # Explanation of the approach and thought process
+│   └── solution.go        # Solution code written in Go
 │
 ├── day02/
 │   ├── input.txt
-│   ├── solution.go
-│   └── README.md
+│   └── solution.go
 │
-├── utils/                 # (Optional) Shared helper functions or utilities
+├── utils/                 # Shared helper functions or utilities
 │   └── ...
 │
-├── tests/                 # (Optional) Unit tests for solutions
+├── tests/                 # Tests for solutions
 │   └── ...
 │
 └── README.md              # This file
@@ -44,22 +42,18 @@ Each folder (e.g., `day01`, `day02`) contains:
 
 - **`input.txt`**: The provided puzzle input for the day.
 - **`solution.go`**: The solution script for the day's challenge.
-- **`README.md`**: A brief explanation of my thought process, algorithms, and challenges faced.
 
 ## 🧑‍💻 Running the Solutions
 
-To run a solution, navigate to the corresponding day's folder and execute the Go program. For example:
+To run a solution, call the corresponding Solve() method from the ``main.go`` and adjust the input and output accordingly:
 
 ```bash
-cd day01
-go run solution.go
+go run main.go
 ```
 
 Make sure you have [Go installed](https://golang.org/doc/install).
 
 ## 🧪 Testing
-
-(Include this section if you've written unit tests.)
 
 To run the tests, execute:
 
