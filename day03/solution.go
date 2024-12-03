@@ -1,125 +1,75 @@
 package day03
 
 import (
-	"bufio"
-	"log"
-	"os"
+	"regexp"
+	"slices"
 	"strconv"
+	"strings"
+
+	"github.com/Turtel216/advent-of-code-2024/utils"
+)
+
+const (
+	part1RegexExpression = `mul\(([\d]{1,3}),([\d]{1,3})\)`
 )
 
 func Solve(path string) (int, int) {
-	return part1(path), 0 //part2(path)
+	lines := utils.ReadFromFile(path)
+	return solvePart1(lines), solvePart2(lines)
 }
 
-func findAdjacentLineSymbols(gearIndex, gearLength int, line string) bool {
-	matchesStart := gearIndex - gearLength - 1
-	matchesEnd := gearIndex
+func solvePart1(lines []string) int {
 
-	for matchesIndex := matchesStart; matchesIndex <= matchesEnd; matchesIndex++ {
-		if matchesIndex < 0 || matchesIndex >= len(line) {
+	text := strings.Join(lines, "")
+	text = strings.ReplaceAll(text, "\n", "")
+
+	sum := 0
+	re := regexp.MustCompile(part1RegexExpression)
+	matches := re.FindAllStringSubmatch(text, -1)
+	for _, match := range matches {
+		num1, _ := strconv.Atoi(match[1])
+		num2, _ := strconv.Atoi(match[2])
+		sum += num1 * num2
+	}
+
+	return sum
+}
+
+const (
+	part2RegexExpression = `(do\(\)|don't\(\))|(mul\(([\d]{1,3}),([\d]{1,3})\))`
+
+	strDo   = "do()"
+	strDont = "don't()"
+)
+
+func solvePart2(input []string) int {
+
+	text := strings.Join(input, "")
+	text = strings.ReplaceAll(text, "\n", "")
+
+	sum := 0
+	re := regexp.MustCompile(part2RegexExpression)
+	matches := re.FindAllStringSubmatch(text, -1)
+
+	do := true
+	for _, match := range matches {
+
+		if slices.Contains(match, strDont) {
+			do = false
 			continue
 		}
 
-		lineIndex := line[matchesIndex]
-
-		// Check if character is a symbol (not a digit or period)
-		if lineIndex != '.' && !isDigit(lineIndex) {
-			return true
+		if slices.Contains(match, strDo) {
+			do = true
+			continue
 		}
-	}
-	return false
-}
 
-func isDigit(ch byte) bool {
-	return ch >= '0' && ch <= '9'
-}
-
-func part1(path string) int {
-	// Read input file
-	file, err := os.Open(path)
-	if err != nil {
-		log.Fatalf("Could not open file, error: %v", err)
-	}
-	defer file.Close()
-
-	var treatedInput []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		treatedInput = append(treatedInput, scanner.Text())
-	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatalf("Error reading file: %v", err)
-	}
-
-	total := 0
-
-	for lineIndex := 0; lineIndex < len(treatedInput); lineIndex++ {
-		gear := ""
-		line := treatedInput[lineIndex]
-
-		for gearIndex := 0; gearIndex < len(line); gearIndex++ {
-			gearValue := line[gearIndex]
-
-			if isDigit(gearValue) {
-				gear += string(gearValue)
-
-				// If we're at the end of the line, process the current gear
-				if gearIndex == len(line)-1 {
-					gearNum, _ := strconv.Atoi(gear)
-
-					// Check adjacent characters in the same line
-					indexPrefix := gearIndex - len(gear)
-					if indexPrefix >= 0 && line[indexPrefix] != '.' {
-						total += gearNum
-						gear = ""
-						continue
-					}
-				}
-				continue
-			}
-
-			// If no gear, skip
-			if gear == "" {
-				continue
-			}
-
-			gearNum, _ := strconv.Atoi(gear)
-
-			// Check adjacent characters in the same line
-			indexSuffix := gearIndex
-			indexPrefix := indexSuffix - len(gear) - 1
-
-			if (indexPrefix >= 0 && line[indexPrefix] != '.') ||
-				(indexSuffix < len(line) && gearValue != '.') {
-				total += gearNum
-				gear = ""
-				continue
-			}
-
-			// Check line above
-			if lineIndex > 0 {
-				topLine := treatedInput[lineIndex-1]
-				if findAdjacentLineSymbols(gearIndex, len(gear), topLine) {
-					total += gearNum
-					gear = ""
-					continue
-				}
-			}
-
-			// Check line below
-			if lineIndex < len(treatedInput)-1 {
-				bottomLine := treatedInput[lineIndex+1]
-				if findAdjacentLineSymbols(gearIndex, len(gear), bottomLine) {
-					total += gearNum
-					gear = ""
-					continue
-				}
-			}
-
-			gear = ""
+		if do {
+			num1, _ := strconv.Atoi(match[len(match)-2])
+			num2, _ := strconv.Atoi(match[len(match)-1])
+			sum += num1 * num2
 		}
 	}
 
-	return total
+	return sum
 }

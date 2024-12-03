@@ -77,13 +77,13 @@ func solvePart1(lines []string) int {
 	return result
 }
 
-// Function to solve Part 2
 const (
 	orderUnknown = 0
 	orderAsc     = 1
 	orderDes     = 2
 )
 
+// Function to solve Part 2
 func solvePart2(lines []string) int {
 
 	numbers := make([][]int, len(lines))
@@ -136,11 +136,7 @@ func solvePart2(lines []string) int {
 			nums := make([]int, len(numsOrg))
 			copy(nums, numsOrg)
 			nums = slices.Delete(nums, i, i+1)
-			// fmt.Printf("i: %d\n", i)
-			// fmt.Printf("org: %+v\n", numsOrg)
-			// fmt.Printf("num: %+v\n", nums)
 			isSafe := checkIsSafe(nums)
-			// fmt.Printf("isSafe: %t\n", isSafe)
 			if isSafe {
 				return true
 			}
@@ -152,7 +148,6 @@ func solvePart2(lines []string) int {
 	safe := 0
 	for _, nums := range numbers {
 		isSafe := problemDampener(nums)
-		// fmt.Printf("nums: %+v, %t\n", nums, isSafe)
 		if isSafe {
 			safe++
 		}
