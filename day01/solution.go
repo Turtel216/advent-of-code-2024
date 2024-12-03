@@ -29,7 +29,7 @@ func Solve(path string) (int, int) {
 	// Part 1: Calculate the sum of absolute differences
 	result1 := 0
 	for i := 0; i < len(list1); i++ {
-		result1 += utils.AbsInt(list1[i] - list2[i])
+		result1 += utils.Abs(list1[i] - list2[i])
 	}
 
 	// Part 2: Calculate the weighted sum based on occurrences in list2
