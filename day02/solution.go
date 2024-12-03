@@ -94,21 +94,25 @@ func solvePart2(filePath string) int {
 			levels = append(levels, n)
 		}
 
-		// Check the problematic index for the initial array
-		problematicIndex := checkReport(levels)
-		if problematicIndex == nil {
-			// If no problematic index, increment result and continue
+		// Check if the report is already safe
+		if checkReport(levels) == nil {
+			// Safe without any modifications
 			result++
 			continue
 		}
 
-		// Remove elements around the problematic index and check again
-		previousProblematicIndex := checkReport(removeFromArray(levels, *problematicIndex-1))
-		nextProblematicIndex := checkReport(removeFromArray(levels, *problematicIndex+1))
-		currentProblematicIndex := checkReport(removeFromArray(levels, *problematicIndex))
+		// Try removing each level one at a time
+		isSafe := false
+		for i := 0; i < len(levels); i++ {
+			modifiedLevels := removeFromArray(levels, i)
+			if checkReport(modifiedLevels) == nil {
+				isSafe = true
+				break
+			}
+		}
 
-		// If removing any one of the problematic elements results in no problematic index, increment result
-		if previousProblematicIndex == nil || nextProblematicIndex == nil || currentProblematicIndex == nil {
+		// If removing any one level makes it safe, count it as safe
+		if isSafe {
 			result++
 		}
 	}
