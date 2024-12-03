@@ -3,6 +3,7 @@ package day02
 import (
 	"log"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -10,7 +11,8 @@ import (
 )
 
 func Solve(path string) (int, int) {
-	return solvePart1(path), solvePart2(path)
+	lines := utils.ReadFromFile(path)
+	return solvePart1(lines), solvePart2(lines)
 }
 
 // Utility function to remove an index from an array
@@ -53,9 +55,7 @@ func checkReport(report []int) *int {
 }
 
 // Function to solve Part 1
-func solvePart1(filePath string) int {
-	lines := utils.ReadFromFile(filePath)
-
+func solvePart1(lines []string) int {
 	result := 0
 	for _, line := range lines {
 		numbers := strings.Split(line, " ")
@@ -78,44 +78,85 @@ func solvePart1(filePath string) int {
 }
 
 // Function to solve Part 2
-func solvePart2(filePath string) int {
-	lines := utils.ReadFromFile(filePath)
+const (
+	orderUnknown = 0
+	orderAsc     = 1
+	orderDes     = 2
+)
 
-	result := 0
-	for _, line := range lines {
-		// Parse the line into an array of integers
-		numbers := strings.Split(line, " ")
-		var levels []int
-		for _, num := range numbers {
-			n, err := strconv.Atoi(num)
-			if err != nil {
-				log.Fatalf("Error parsing number: %v", err)
-			}
-			levels = append(levels, n)
-		}
+func solvePart2(lines []string) int {
 
-		// Check if the report is already safe
-		if checkReport(levels) == nil {
-			// Safe without any modifications
-			result++
-			continue
-		}
+	numbers := make([][]int, len(lines))
 
-		// Try removing each level one at a time
-		isSafe := false
-		for i := 0; i < len(levels); i++ {
-			modifiedLevels := removeFromArray(levels, i)
-			if checkReport(modifiedLevels) == nil {
-				isSafe = true
-				break
-			}
-		}
+	for n, line := range lines {
 
-		// If removing any one level makes it safe, count it as safe
-		if isSafe {
-			result++
+		parts := strings.Fields(line)
+		numbers[n] = make([]int, 0, len(parts))
+
+		for i := 0; i < len(parts); i++ {
+			num, _ := strconv.Atoi(parts[i])
+			numbers[n] = append(numbers[n], num)
 		}
 	}
 
-	return result
+	checkIsSafe := func(nums []int) bool {
+		a := 0
+		b := 1
+		order := orderUnknown
+		for i := 0; i < len(nums)-1; i++ {
+			switch {
+			case nums[a] == nums[b]:
+				return false
+			case nums[b] > nums[a] && nums[b]-nums[a] >= 1 && nums[b]-nums[a] <= 3:
+				if order == orderDes {
+					return false
+				}
+				order = orderAsc
+			case nums[a] > nums[b] && nums[a]-nums[b] >= 1 && nums[a]-nums[b] <= 3:
+				if order == orderAsc {
+					return false
+				}
+				order = orderDes
+			default:
+				return false
+			}
+			a++
+			b++
+		}
+
+		if order != orderUnknown {
+			return true
+		}
+
+		return false
+	}
+
+	problemDampener := func(numsOrg []int) bool {
+		for i := 0; i < len(numsOrg); i++ {
+			nums := make([]int, len(numsOrg))
+			copy(nums, numsOrg)
+			nums = slices.Delete(nums, i, i+1)
+			// fmt.Printf("i: %d\n", i)
+			// fmt.Printf("org: %+v\n", numsOrg)
+			// fmt.Printf("num: %+v\n", nums)
+			isSafe := checkIsSafe(nums)
+			// fmt.Printf("isSafe: %t\n", isSafe)
+			if isSafe {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	safe := 0
+	for _, nums := range numbers {
+		isSafe := problemDampener(nums)
+		// fmt.Printf("nums: %+v, %t\n", nums, isSafe)
+		if isSafe {
+			safe++
+		}
+	}
+
+	return safe
 }
