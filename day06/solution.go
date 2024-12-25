@@ -6,7 +6,7 @@ import (
 
 func Solve(path string) (int, int) {
 	lines := utils.ReadFromFile(path)
-	return solvePart1(lines), solvePart1(lines)
+	return solvePart1(lines), solvePart2(path)
 }
 
 func solvePart1(input []string) int {
@@ -19,10 +19,6 @@ func solvePart1(input []string) int {
 	guardWalk(room)
 
 	return len(visited)
-}
-
-func solvePart2(input []string) int {
-	return 0
 }
 
 type field struct {

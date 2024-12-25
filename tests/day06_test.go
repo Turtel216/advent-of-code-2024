@@ -10,7 +10,7 @@ import (
 // Answers that passed the test on the advent of code website for the given input
 const (
 	acceptedDay06Answer1 = 5534
-	acceptedDay06Answer2 = 0 // unknown
+	acceptedDay06Answer2 = 2262
 )
 
 func TestDaySix(t *testing.T) {
