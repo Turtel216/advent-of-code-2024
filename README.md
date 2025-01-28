@@ -71,6 +71,7 @@ go test ./tests/...
 | 4   |  ✅     | ✅     |       |
 | 5   |  ✅     | ✅     |       |
 | 6   |  ✅     |  ✅    |  Messy solution     |
+| 7   |  ✅     |  ✅    |  |
 | ... |        |        |       |
 
 ## 🤝 Contributing
